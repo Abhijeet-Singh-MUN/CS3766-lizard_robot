@@ -139,8 +139,8 @@ public:
   }
 #endif
   void writeAngle(uint8_t servoNum, float angle) {
-    int clipped = min(max(EEPROMReadInt(ANGLE2PULSE_FACTOR + servoNum * 2) / 1000.0 * angle + (byte)eeprom(B_OFFSET) * 10, 500), 2500);
-    setPWM(eeprom(PWM_PIN, servoNum), 0, clipped);
+    int clipped = min(max(EEPROMReadInt(ANGLE2PULSE_FACTOR + servoNum * 2) / 1000.0 * angle + (byte)EEPROM.read(B_OFFSET) * 10, 500), 2500);
+    setPWM(EEPROM.read(PWM_PIN, servoNum), 0, clipped);
     //      if (servoNum == 1) {
     //        Serial.print(servoNum); Serial.print('\t');
     //        Serial.print(EEPROMReadInt(ANGLE2PULSE_FACTOR + servoNum * 2) / 1000.0 * angle + (byte)eeprom(B_OFFSET) * 10); Serial.print('\t');
@@ -189,7 +189,7 @@ void setServoP(unsigned int p) {
 long initValue;
 void PCA9685CalibrationPrompt() {
   PTF("Optional: Connect PWM ");
-  PT(eeprom(PWM_PIN, 3));
+  PT(EEPROM.read(PWM_PIN, 3));
   PTLF(" -> Grove pin A3 to calibrate PCA9685");
 }
 
@@ -207,7 +207,7 @@ void calibratePCA9685() {
   delay(10);
   if (!calibrated && !digitalRead(PWM_READ_PIN)) {  //the pins are connected
     //    for (byte i = 0; i < 16; i++)
-    pwm.writeMicroseconds(eeprom(PWM_PIN, 3), 1500);
+    pwm.writeMicroseconds(EEPROM.read(PWM_PIN, 3), 1500);
     int actualPulseWidth;
     actualPulseWidth = 0;
     for (int i = 0; i < COUNT_TIMES + 1; i++) {
@@ -241,7 +241,7 @@ void calibratePCA9685() {
 void servoSetup() {
   PTF("Servo:");
   for (byte i = 0; i < DOF; i++) {
-    servoCalib[i] = eeprom(CALIB, i);
+    servoCalib[i] = EEPROM.read(CALIB, i);
   }
   pwm.begin();
   initValue = EEPROMReadInt(PCA9685_FREQ);

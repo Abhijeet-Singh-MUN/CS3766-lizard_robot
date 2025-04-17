@@ -1,3 +1,29 @@
+#include <EEPROM.h>
+#define _USE_MATH_DEFINES
+#define REGULAR G41
+#define KNEE P1S
+#include <math.h>  // Use standard M_PI
+
+
+// BIOMIMETIC JOINTS (GEKKO GEKO REFERENCE)
+#pragma once
+
+// Limb segments (mm) - Source: Autumn et al. 2006
+const float HUMERUS = 45.0;  // Shoulder-to-elbow
+const float RADIUS = 60.0;    // Elbow-to-wrist 
+const float METACARPAL = 30.0; // Wrist-to-foot
+
+// Joint limits (degrees)
+const int8_t HIP_MIN = -45;   // Medial rotation limit
+const int8_t HIP_MAX = 45;    // Lateral rotation limit
+const uint8_t KNEE_MIN = 0;  
+const uint8_t KNEE_MAX = 120; // Full extension prevented
+
+// Spherical joint conversion flags
+#define SHOULDER_2DOF  // XY rotation
+#define WRIST_SPHERICAL // XYZ rotation (requires 3 servos)
+
+
 #define SOFTWARE_VERSION "N_250224"  //NyBoard + YYMMDD
 //board configuration
 // -- comment out these blocks to save program space for your own codes --
@@ -11,6 +37,7 @@
 //Tutorial: https://bittle.petoi.com/11-tutorial-on-creating-new-skills
 
 #define DOF 16
+
 
 #ifdef NYBBLE
 int8_t middleShift[] = { 0, 15, 0, 0,
@@ -213,14 +240,14 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 
 //token list
 #define T_ABORT 'a'      //abort the calibration values
-#define T_BEEP 'b'       //b note1 duration1 note2 duration2 ... e.g. b12 8 14 8 16 8 17 8 19 4 \
+#define T_BEEP 'b'       //b note1 duration1 note2 duration2 ... e.g. b12 8 14 8 16 8 17 8 19 4 */
                          //a single 'b' will toggle the melody on/off
-#define T_CALIBRATE 'c'  //send the robot to calibration posture for attaching legs and fine-tuning the joint offsets. \
+#define T_CALIBRATE 'c'  //send the robot to calibration posture for attaching legs and fine-tuning the joint offsets. */
                          //c jointIndex1 offset1 jointIndex2 offset2 ... e.g. c0 7 1 -4 2 3 8 5
 #define T_REST 'd'
 #define T_GYRO_FINENESS 'g'             //adjust the finess of gyroscope adjustment to accelerate motion
 #define T_GYRO_BALANCE 'G'              //toggle on/off the gyro adjustment
-#define T_INDEXED_SIMULTANEOUS_ASC 'i'  //i jointIndex1 jointAngle1 jointIndex2 jointAngle2 ... e.g. i0 70 8 -20 9 -20 \
+#define T_INDEXED_SIMULTANEOUS_ASC 'i'  //i jointIndex1 jointAngle1 jointIndex2 jointAngle2 ... e.g. i0 70 8 -20 9 -20 */
                                         //a single 'i' will free the head joints if it were previously manually controlled.
 #define T_JOINTS 'j'                    //A single "j" returns all angles. "j Index" prints the joint's angle. e.g. "j 8" or "j11".
 #define T_SKILL 'k'
@@ -360,11 +387,12 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 #ifdef DEVELOPER
 // #include "MemoryFree/MemoryFree.h"  //http://playground.arduino.cc/Code/AvailableMemory
 #endif
-#include <EEPROM.h>
+extern int EEPROMReadInt(int p_address);
+extern void EEPROMWriteInt(int p_address, int p_value);
 
 #include "tools.h"
 #include <avr/wdt.h>  // https://create.arduino.cc/projecthub/rafitc/what-is-watchdog-timer-fffe20
-#include "eeprom.h"
+
 #include "sound.h"
 
 #if defined IR_PIN
@@ -377,7 +405,7 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 #endif
 
 #ifdef RANDOM_MIND
-// #define ALL_RANDOM  // add random joint movements between the choice list of preset behaviors \
+/*#define ALL_RANDOM  //add random joint movements between the choice list of preset behaviors */
                     // when it's activated, the gyro will be disabled
 #include "randomMind.h"
 #undef BINARY_COMMAND
@@ -397,7 +425,7 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 
 #else
 
-#define TASK_QUEUE  //allow executing a sequence of tasks, if you enabled the other modules, the task queue will be automatically enabled. \
+#define TASK_QUEUE  /*allow executing a sequence of tasks, if you enabled the other modules, the task queue will be automatically enabled. */
   // because it takes up memory, it should be disabled if the GYRO is enabled. See "#undef TASK_QUEUE" under ifdef GYRO
 #ifdef TASK_QUEUE
 #include "taskQueue.h"
@@ -456,7 +484,7 @@ void initRobot() {
   PTLF("\n* Start *");
   PTLF(MODEL);
   PTLF(SOFTWARE_VERSION);
-  if (eeprom(BOOTUP_SOUND_STATE))
+  if (EEPROM(BOOTUP_SOUND_STATE))
     playMelody(MELODY_NORMAL);
 
 #ifdef GYRO_PIN

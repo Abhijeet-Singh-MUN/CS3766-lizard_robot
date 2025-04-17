@@ -80,14 +80,17 @@
 // #define ROBOT_ARM
 
 #define IR_PIN 4  // Signal Pin of IR receiver to Arduino Digital Pin 4
-#include "src/OpenCat.h"
-
+#include "OpenCat.h"
+#include "src/biomimetic/lizard_ik.h"  // Add this at top of the file to include the IK library
 void setup() {
   Serial.begin(BAUD_RATE);
   Serial.setTimeout(SERIAL_TIMEOUT);
   // while (Serial.available() && Serial.read());  // empty buffer
 
   // join I2C bus (I2Cdev library doesn't do this automatically)
+
+  initIKParameters();  // Initialize biomimetic values
+  
   //#if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
   Wire.begin();
   //  TWBR = 24; // 400kHz I2C clock (200kHz if CPU is 8MHz)
@@ -126,6 +129,10 @@ void loop() {
 #else
   calibratePCA9685();
 #endif
+
+// In gait generation section:
+float shoulder, elbow, wrist;
+calculateLimbIK(targetX, targetY, targetZ, &shoulder, &elbow, &wrist);
 }
 
 #ifdef OTHER_MODULES  //remember to activate the #define OTHER_MODULES at the begining of this code to activate the following section
