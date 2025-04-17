@@ -36,7 +36,7 @@
   2. Comment out #define MAIN_SKETCH and upload. Upload and follow the serial prompts to proceed.
   3. Uncomment #define MAIN_SKETCH to make it active. Then upload the program for main functions.
 */
-
+#include "src/biomimetic/lizard_ik.h"  // Adding this at top of the file to include the IK library
 #define MAIN_SKETCH  //the Petoi App only works when this mode is on
 // #define AUTO_INIT //automatically select 'Y' for the reset joint and IMU prompts
 // #define DEVELOPER //to print out some verbose debugging data
@@ -81,7 +81,7 @@
 
 #define IR_PIN 4  // Signal Pin of IR receiver to Arduino Digital Pin 4
 #include "OpenCat.h"
-#include "src/biomimetic/lizard_ik.h"  // Add this at top of the file to include the IK library
+
 void setup() {
   Serial.begin(BAUD_RATE);
   Serial.setTimeout(SERIAL_TIMEOUT);
@@ -109,6 +109,13 @@ void loop() {
   dealWithExceptions();  //fall over, lifted, etc.
 #endif
 
+lizardTrot(gaitPhase);  // Replace original gait call
+  gaitPhase += 0.1f;      // Adjust increment for speed
+  if(gaitPhase >= 2*PI) gaitPhase -= 2*PI;
+  
+  delay(50);  // Biological timing (~20Hz)
+}
+
 #ifdef TASK_QUEUE
   if (!tQueue->empty()) {
     tQueue->popTask();
@@ -131,6 +138,7 @@ void loop() {
 #endif
 
 // In gait generation section:
+static float gaitPhase = 0.0f;
 float shoulder, elbow, wrist;
 calculateLimbIK(targetX, targetY, targetZ, &shoulder, &elbow, &wrist);
 }
