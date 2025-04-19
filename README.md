@@ -1,3 +1,115 @@
+# Biomimetic Lizard Robot Project 🦎
+**Forked from PetoiCamp/OpenCat**  
+*Advanced Robotic Manipulation Implementation*  
+![PlatformIO]
+
+
+# Important
+** Currently no red squiggles, or errors in code, if you face any, please go to platformio.ini and backspace on a character, and add it again, the platformio.ini will load and build itself if all dependencies installed**
+
+- Overall the code may face problems becasue integration with a arduino board is required.
+- implementation in arduino because limitations in availability of open-source robo dog code.
+- possible urdf, and inverse kinematics file separately attached for reference.
+
+## Project Overview
+This project modifies OpenCat's quadruped platform into a biologically-inspired lizard robot through targeted inverse kinematics and control system adaptations. Key implementations include:
+
+- **Limb-Specific Inverse Kinematics**
+- **Biologically-Constrained Joint Parameters**
+- **Hybrid Gait Engine**
+- **Servo Implementation**
+- **Main OpenCat.ino and OpenCat.h modification**
+
+## Key Features
+| Component | Implementation | Biological Basis |
+|-----------|----------------|------------------|
+| Forelimbs | Planar Triangulation IK | *Gekko gecko / lizard* forelimb kinematics |
+| Hindlimbs | 3D Sagittal Solver | Reptilian hindlimb dynamics |
+| Joints | Constrained ROM | Autumn et al. (2006) studies |
+| Control | 4-3-3-2 Gait Pattern | PMC8059955 locomotion research |
+
+## Repository Structure
+
+CS3766-lizard_robot/
+├── src/
+│ ├── biomimetic/
+│ │ ├── lizard_ik.h # Inverse kinematics solvers
+│ │ └── lizard_params.h # Biological constraints
+│ | 
+│ │── servo.h # Modified joint control
+│ │── servo.cpp # PWM implementations
+│ ├── gait.cpp # 4-3-3-2 gait engine
+│ └── motion.h # Adaptive locomotion logic
+├ | OpenCat.ino # Main control logic
+└── platformio.ini # Build configuration
+
+
+## Dependencies
+[env:custom_petoiboard]
+lib_deps =
+adafruit/Adafruit PWM Servo Driver Library @ ^2.4.0
+arduino-libraries/Servo @ ^1.2.1
+
+
+## Installation
+
+Clone repository
+git clone https://github.com/Abhijeet-Singh-MUN/CS3766-lizard_robot
+cd CS3766-lizard_robot
+
+Install dependencies
+platformio lib install
+
+Build & upload
+platformio run --target upload
+
+
+## Implementation Details
+
+### Biological Parameters
+// Forelimb constraints (lizard_params.h)
+constexpr float ARM_HUMERUS = 45.0f; // Shoulder-to-elbow (mm)
+constexpr int8_t ARM_HIP_MIN = -45; // Medial rotation limit
+
+
+### Hybrid Inverse Kinematics
+// Planar triangulation (lizard_ik.h)
+float planarDist = sqrt(xx + yy);
+shoulder = atan2(y, x) * RAD_TO_DEG;
+
+
+### Gait Implementation
+// 4-3-3-2 timing (gait.cpp)
+phase[leg] += isHind ? 0.004f : 0.003f;
+
+
+## Known Issues
+PlatformIO PATH Errors
+Fix: export PATH="$HOME/.platformio/penv/bin:$PATH"
+
+Servo Calibration Failures
+Workaround: Add EEPROM validation in setup()
+
+Memory Overflows
+Resolution: Add -Wl,--relax to build_flags
+
+Joint Synchronization Drift
+Mitigation: Phase reset every 1000 cycles
+
+
+## Contributing
+1. Report issues via GitHub tracker
+2. Fork repository and submit PRs to `biomimetic-lizard` branch
+3. Follow biological constraint guidelines in `lizard_params.h`
+
+**License**: GPL-3.0 (Inherited from OpenCat)  
+**Maintainer**: [Abhijeet Singh](https://github.com/Abhijeet-Singh-MUN)
+
+
+
+
+# Important - Previous major Readme.md update - just for reference
+
 # CS3766: Biomimetic Lizard Robot Project  
 [![PlatformIO](https://platformio.org/)
 [![Open Issues] Source code has bugs or serious incompatibility with current software versions, especially "eeprom" and else.
@@ -122,119 +234,6 @@ This project required extensive reverse-engineering due to original code limitat
    Deprecated `Bittle` references caused namespace collisions
 
 
-
-**License**: GPL-3.0 (Inherited from OpenCat)  
-**Maintainer**: [Abhijeet Singh](https://github.com/Abhijeet-Singh-MUN)
-
-
-
-
-
-
-
-# Biomimetic Lizard Robot Project 🦎
-**Forked from PetoiCamp/OpenCat**  
-*Advanced Robotic Manipulation Implementation*  
-![PlatformIO]
-
-
-# Important
-** Currently no red squiggles, or errors in code, if you face any, please go to platformio.ini and backspace on a character, and add it again, the platformio.ini will load and build itself if all dependencies installed**
-
-- Overall the code may face problems becasue integration with a arduino board is required.
-- implementation in arduino because limitations in availability of open-source robo dog code.
-- possible urdf, and inverse kinematics file separately attached for reference.
-
-## Project Overview
-This project modifies OpenCat's quadruped platform into a biologically-inspired lizard robot through targeted inverse kinematics and control system adaptations. Key implementations include:
-
-- **Limb-Specific Inverse Kinematics**
-- **Biologically-Constrained Joint Parameters**
-- **Hybrid Gait Engine**
-- **Servo Implementation**
-- **Main OpenCat.ino and OpenCat.h modification**
-
-## Key Features
-| Component | Implementation | Biological Basis |
-|-----------|----------------|------------------|
-| Forelimbs | Planar Triangulation IK | *Gekko gecko / lizard* forelimb kinematics |
-| Hindlimbs | 3D Sagittal Solver | Reptilian hindlimb dynamics |
-| Joints | Constrained ROM | Autumn et al. (2006) studies |
-| Control | 4-3-3-2 Gait Pattern | PMC8059955 locomotion research |
-
-## Repository Structure
-
-CS3766-lizard_robot/
-├── src/
-│ ├── biomimetic/
-│ │ ├── lizard_ik.h # Inverse kinematics solvers
-│ │ └── lizard_params.h # Biological constraints
-│ | 
-│ │── servo.h # Modified joint control
-│ │── servo.cpp # PWM implementations
-│ ├── gait.cpp # 4-3-3-2 gait engine
-│ └── motion.h # Adaptive locomotion logic
-├ | OpenCat.ino # Main control logic
-└── platformio.ini # Build configuration
-
-
-## Dependencies
-[env:custom_petoiboard]
-lib_deps =
-adafruit/Adafruit PWM Servo Driver Library @ ^2.4.0
-arduino-libraries/Servo @ ^1.2.1
-
-
-## Installation
-
-Clone repository
-git clone https://github.com/Abhijeet-Singh-MUN/CS3766-lizard_robot
-cd CS3766-lizard_robot
-
-Install dependencies
-platformio lib install
-
-Build & upload
-platformio run --target upload
-
-
-## Implementation Details
-
-### Biological Parameters
-// Forelimb constraints (lizard_params.h)
-constexpr float ARM_HUMERUS = 45.0f; // Shoulder-to-elbow (mm)
-constexpr int8_t ARM_HIP_MIN = -45; // Medial rotation limit
-
-
-### Hybrid Inverse Kinematics
-// Planar triangulation (lizard_ik.h)
-float planarDist = sqrt(xx + yy);
-shoulder = atan2(y, x) * RAD_TO_DEG;
-
-
-### Gait Implementation
-// 4-3-3-2 timing (gait.cpp)
-phase[leg] += isHind ? 0.004f : 0.003f;
-
-
-## Known Issues
-PlatformIO PATH Errors
-Fix: export PATH="$HOME/.platformio/penv/bin:$PATH"
-
-Servo Calibration Failures
-Workaround: Add EEPROM validation in setup()
-
-Memory Overflows
-Resolution: Add -Wl,--relax to build_flags
-
-Joint Synchronization Drift
-Mitigation: Phase reset every 1000 cycles
-
-
-## Contributing
-1. Report issues via GitHub tracker
-2. Fork repository and submit PRs to `biomimetic-lizard` branch
-3. Follow biological constraint guidelines in `lizard_params.h`
 
 **License**: GPL-3.0 (Inherited from OpenCat)  
 **Maintainer**: [Abhijeet Singh](https://github.com/Abhijeet-Singh-MUN)
