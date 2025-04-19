@@ -1,1 +1,3 @@
-Servo
+src/
+arduino-libraries/Servo
+adafruit/Adafruit PWM Servo Driver Library @ ^2.4.0

@@ -3,6 +3,10 @@
 #define REGULAR G41
 #define KNEE P1S
 #include <math.h>  // Use standard M_PI
+#include "src/servo.h"
+#ifndef constrain
+#define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
+#endif
 
 
 // BIOMIMETIC JOINTS (GEKKO GEKO REFERENCE)

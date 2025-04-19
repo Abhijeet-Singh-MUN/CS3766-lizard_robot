@@ -82,7 +82,12 @@
 #define IR_PIN 4  // Signal Pin of IR receiver to Arduino Digital Pin 4
 #include "OpenCat.h"
 
-void setup() {
+void setup() 
+// Add EEPROM validation
+if(EEPROM.read(CALIB_ADDR) != 0xAA) {
+  resetCalibration();
+}
+{
   Serial.begin(BAUD_RATE);
   Serial.setTimeout(SERIAL_TIMEOUT);
   // while (Serial.available() && Serial.read());  // empty buffer
