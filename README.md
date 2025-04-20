@@ -30,19 +30,18 @@ This project modifies OpenCat's quadruped platform into a biologically-inspired 
 | Control | 4-3-3-2 Gait Pattern | PMC8059955 locomotion research |
 
 ## Repository Structure
-
 CS3766-lizard_robot/
 ├── src/
 │ ├── biomimetic/
-│ │ ├── lizard_ik.h # Inverse kinematics solvers
-│ │ └── lizard_params.h # Biological constraints
-│ | 
-│ │── servo.h # Modified joint control
-│ │── servo.cpp # PWM implementations
-│ ├── gait.cpp # 4-3-3-2 gait engine
+│ │ ├── lizard_ik.h # Inverse kinematics solvers (triangulation/3D projection)
+│ │ └── lizard_params.h # Biological constraints (joint limits, limb proportions)
+│ ├── servo/
+│ │ ├── servo.h # Modified joint control interface
+│ │ └── servo.cpp # PWM implementations with biological constraints
+│ ├── gait.cpp # 4-3-3-2 gait pattern implementation
 │ └── motion.h # Adaptive locomotion logic
-├ | OpenCat.ino # Main control logic
-└── platformio.ini # Build configuration
+├── OpenCat.ino # Main control logic (entry point)
+└── platformio.ini # Build configuration for NyBoard V1
 
 
 ## Dependencies
@@ -87,9 +86,6 @@ phase[leg] += isHind ? 0.004f : 0.003f;
 ## Known Issues
 PlatformIO PATH Errors
 Fix: export PATH="$HOME/.platformio/penv/bin:$PATH"
-
-Servo Calibration Failures
-Workaround: Add EEPROM validation in setup()
 
 Memory Overflows
 Resolution: Add -Wl,--relax to build_flags
