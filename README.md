@@ -10,7 +10,8 @@
 
 - Overall the code may face problems becasue integration with a arduino board is required.
 - implementation in arduino because limitations in availability of open-source robo dog code.
-- possible urdf, and inverse kinematics file separately attached for reference.
+
+# Reference urdf, and reference inverse kinematic, and header file separately attached (src\Reference_URDF_&_INVERSE KINEMATICS)for quick interpretation of arduino implementation to urdf format,  It is not the actual implementation.
 
 ## Project Overview
 This project modifies OpenCat's quadruped platform into a biologically-inspired lizard robot through targeted inverse kinematics and control system adaptations. Key implementations include:
@@ -32,6 +33,10 @@ This project modifies OpenCat's quadruped platform into a biologically-inspired 
 ## Repository Structure
 CS3766-lizard_robot/
 ├── src/
+| |___Reference_URDF_&_INVERSE KINEMATICS
+|    |___lizard_Robot.urdf
+|    |___lizard_Robot_IK.cpp
+|    |___lizard_robot_IK.h
 │ ├── biomimetic/
 │ │ ├── lizard_ik.h # Inverse kinematics solvers (triangulation/3D projection)
 │ │ └── lizard_params.h # Biological constraints (joint limits, limb proportions)

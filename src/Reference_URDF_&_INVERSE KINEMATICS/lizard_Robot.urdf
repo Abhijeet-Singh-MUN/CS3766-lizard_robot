@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<robot name="biomimetic_lizard">
+
+  <!-- Base link with combined mesh -->
+  <link name="torso">
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="0.5"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="package://lizard/meshes/full_limbs.glb"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <!-- Right Arm -->
+  <link name="r_shoulder_pan"/>
+  <joint name="r_shoulder_pan_joint" type="revolute">
+    <parent link="torso"/>
+    <child link="r_shoulder_pan"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.785" upper="0.785" effort="100" velocity="0.5"/> <!-- -45° to +45° -->
+    <origin xyz="-0.22 0 0.25"/> <!-- Lateral position -->
+  </joint>
+
+  <link name="r_humerus">
+    <visual>
+      <geometry>
+        <mesh filename="package://lizard/meshes/full_limbs.glb">
+          <scale 0.45 0.45 0.45/> <!-- 45mm segment -->
+        </mesh>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="r_shoulder_pitch_joint" type="revolute">
+    <parent link="r_shoulder_pan"/>
+    <child link="r_humerus"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.785" upper="0.785" effort="100" velocity="0.5"/> <!-- -45° to +45° -->
+  </joint>
+
+  <link name="r_radius">
+    <visual>
+      <geometry>
+        <mesh filename="package://lizard/meshes/full_limbs.glb">
+          <scale 0.6 0.6 0.6/> <!-- 60mm segment -->
+        </mesh>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="r_elbow_joint" type="revolute">
+    <parent link="r_humerus"/>
+    <child link="r_radius"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="0" upper="2.094" effort="100" velocity="0.5"/> <!-- 0°-120° -->
+  </joint>
+
+  <!-- Left Arm (mirrored structure with same constraints) -->
+  <!-- ... -->
+
+  <!-- Right Leg -->
+  <link name="r_hip_yaw"/>
+  <joint name="r_hip_yaw_joint" type="revolute">
+    <parent link="torso"/>
+    <child link="r_hip_yaw"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.524" upper="0.698" effort="100" velocity="0.5"/> <!-- -30° to +40° -->
+    <origin xyz="-0.22 0 -0.25"/> <!-- Posterior position -->
+  </joint>
+
+  <link name="r_femur">
+    <visual>
+      <geometry>
+        <mesh filename="package://lizard/meshes/full_limbs.glb">
+          <scale 0.55 0.55 0.55/> <!-- 55mm segment -->
+        </mesh>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="r_hip_pitch_joint" type="revolute">
+    <parent link="r_hip_yaw"/>
+    <child link="r_femur"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.785" upper="0.785" effort="100" velocity="0.5"/> <!-- -45° to +45° -->
+  </joint>
+
+  <link name="r_tibia">
+    <visual>
+      <geometry>
+        <mesh filename="package://lizard/meshes/full_limbs.glb">
+          <scale 0.65 0.65 0.65/> <!-- 65mm segment -->
+        </mesh>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="r_knee_joint" type="revolute">
+    <parent link="r_femur"/>
+    <child link="r_tibia"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="0.175" upper="2.268" effort="100" velocity="0.5"/> <!-- 10°-130° -->
+  </joint>
+
+  <!-- Left Leg (mirrored structure with same constraints) -->
+  <!-- ... -->
+
+</robot>
